@@ -5,7 +5,6 @@ import numpy as np
 if __name__ == '__main__':
     
     mlx_shape = (12,16)
-
     
     plt.ion()
     fig,ax = plt.subplots(figsize=(8,5))
@@ -23,7 +22,18 @@ if __name__ == '__main__':
             if len(line) >200:
                 df = np.fromstring(line, dtype = float, sep=',')
                 if df.shape ==(192,):
+                    for obj in ax.findobj(match = type(plt.Circle(1,1))):
+                        obj.remove() #clear circle
+                    
                     data_array = np.reshape(df, mlx_shape)
+                    res = np.where(data_array == np.min(data_array))
+                    
+                    min_idx = list(zip(res[1],res[0]))[0]
+                    
+                    circ = plt.Circle((15-min_idx[0],min_idx[1]), 1, color ='r', fill = False)
+                    ax.add_patch(circ)
+                    
+                    
                     therm1.set_data(np.fliplr(data_array)) # flip left to right
                     therm1.set_clim(vmin=np.min(data_array),vmax=np.max(data_array)) # set bounds
                     cbar.on_mappable_changed(therm1) # update colorbar range
